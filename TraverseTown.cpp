@@ -122,6 +122,7 @@ class Graph
         
         BFTgraph=createLinkedList(10000);
         
+        GraphSearch::BFTRec(BFTgraph);
         
         // perform a BFT on the linked list graph
         
@@ -137,12 +138,13 @@ class Graph
     {
         
         // generate linked list from above ^^^^^
+        Graph* BFTgraph;
+        
+        BFTgraph = createLinkedList(10000);
         
         // createLinkedList(10000)
         
         // perform a BFT on the linked list graph
-        
-        
         
         
     }
@@ -182,10 +184,8 @@ class GraphSearch
         }
     }
 
-
     vector<Node> DFSIter(struct Node *start, struct Node *end)
     {
-
         // does an iterative DFS search and returns in the array
         
         // get graph with start node to end node ... not sure how to do that lol
@@ -210,21 +210,14 @@ class GraphSearch
                             viNodes[i]->visited=true;
                             S.push(viNodes[i]);
                         }
-                            
-                        
                     }
                 }
             }
-           
         }
-
     }
-
 
     vector<Node> BFTRec(Graph* graph) // ask Subhrasree if this has to be const
     {
-
-
         // does a recursive BFT search
         
         Queue* Q = new Queue();
@@ -244,10 +237,23 @@ class GraphSearch
                 Q->size = Q->size + 1;
                 while (Q->size!=0)
                 {
-                    Node
+                    Node cur = Q->array[Q->front];
+                    Q->front = (Q->front + 1) % Q->capacity;
+                    Q->size = Q->size - 1;
+                    // process cur
+                    vector<Node*> viNodes = cur.neighbors;
+                     for (int i=0;i<sizeof(viNodes);i++)
+                     {
+                         if(viNodes[i]->visited==false)
+                         {
+                             viNodes[i]->visited==true;
+                             Q->rear = (Q->rear + 1) % Q->capacity;
+                             Q->array[Q->rear] = *viNodes[i];
+                             Q->size = Q->size + 1;
+                         }
+                     }
                 }
             }
-            
         }
         
         
@@ -266,7 +272,7 @@ class GraphSearch
 
 
     }
-//
+    
 //    ArrayList<Node> BFTIter(final Graph graph)
 //    {
 //
@@ -281,8 +287,6 @@ class GraphSearch
 
 
 };
-
-
 
 vector<int> adj[50];
 
