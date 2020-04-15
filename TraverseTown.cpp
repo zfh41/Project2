@@ -6,89 +6,25 @@
 #include <stdlib.h>
 #include <time.h>
 #include <random>
+#include <stack>
 
 using namespace std;
 
 struct Node {
   string name;
   vector<Node*> neighbors;
-  bool visited
+  bool visited;
   Node(string name) {
     this->name=name;
   }
 };
 
-class GraphSearch
+class Queue
 {
-
-    vector<Node> DFSRec(struct Node *start, struct Node *end)
-    {
-
-        // does a DFS search and return between the start and end node
-        
-        
-        
-        // get graph with start node to end node ... not sure how to do that lol
-        vector<Node*> vertices = start->neighbors;
-        
-        for (int i; i<sizeof(vertices) ; i++)
-        {
-            vertices[i]->visited = true;
-            
-            
-            
-            
-            
-            
-        }
-            if v is not visited:
-                mark v as visited
-                "process" v
-                for each vertex vi that has an edge from v:
-                    if vi is not visited:
-                        DFSRec()
-        
-            
-        
-
-
-
-
-    }
-
-
-//    ArrayList<Node> DFSIter(struct node start, final Node end)
-//    {
-//
-//        // does an iterative DFS search and returns in the array
-//
-//
-//
-//    }
-//
-//
-//    ArrayList<Node> BFTRec(final graph Graph)
-//    {
-//
-//
-//        // does a recursive BFT search
-//
-//
-//    }
-//
-//    ArrayList<Node> BFTIter(final Graph graph)
-//    {
-//
-//
-//
-//        // does an iterative BFT search
-//
-//
-//
-//    }
-
-
-
+    public:
+    int front, rear, size;
+    unsigned capacity;
+    Node* array;
 };
 
 class Graph
@@ -186,7 +122,6 @@ class Graph
         
         BFTgraph=createLinkedList(10000);
         
-//        createLinkedList(10000);
         
         // perform a BFT on the linked list graph
         
@@ -212,6 +147,139 @@ class Graph
         
     }
     
+};
+
+class GraphSearch
+{
+
+    vector<Node> DFSRec(struct Node *start, struct Node *end)
+    {
+
+        // does a DFS search and return between the start and end node
+        
+        //if v is not visited:
+        //                mark v as visited
+        //                "process" v
+        //                for each vertex vi that has an edge from v:
+        //                    if vi is not visited:
+        //                        DFSRec()
+        
+        
+        
+        // get graph with start node to end node ... not sure how to do that lol
+        vector<Node*> vertices = start->neighbors;
+        
+        for (int i; i<sizeof(vertices) ; i++)
+        {
+            vertices[i]->visited = true;
+            //not sure what process v means.... maybe add to array?
+            vector<Node*> viNodes = vertices[i]->neighbors;
+            for (int i=0;i<sizeof(viNodes);i++)
+            {
+                if (viNodes[i]->visited==false)
+                    DFSRec(viNodes[i], viNodes[sizeof(viNodes)-1]);
+            }
+        }
+    }
+
+
+    vector<Node> DFSIter(struct Node *start, struct Node *end)
+    {
+
+        // does an iterative DFS search and returns in the array
+        
+        // get graph with start node to end node ... not sure how to do that lol
+        vector<Node*> vertices = start->neighbors;
+        
+        stack<Node*> S;
+        for (int i;i<sizeof(vertices);i++)
+        {
+            if (vertices[i]->visited==false)
+            {
+                vertices[i]->visited=true;
+                S.push(vertices[i]);
+                while (!S.empty())
+                {
+//                    Node cur = S.pop(); // giving me weird rvalue error // check w/ Subhrasree
+                    //again not sure what process means... maybe add to array?
+                    vector<Node*> viNodes = vertices[i]->neighbors;
+                    for (int i=0;i<sizeof(viNodes);i++)
+                    {
+                        if (viNodes[i]->visited==false)
+                        {
+                            viNodes[i]->visited=true;
+                            S.push(viNodes[i]);
+                        }
+                            
+                        
+                    }
+                }
+            }
+           
+        }
+
+    }
+
+
+    vector<Node> BFTRec(Graph* graph) // ask Subhrasree if this has to be const
+    {
+
+
+        // does a recursive BFT search
+        
+        Queue* Q = new Queue();
+        Q->capacity=100;
+        Q->front = Q->size = 0;
+        Q->rear = Q->capacity - 1;
+        Q->array = *new Node*[(Q->capacity * sizeof(Node*))];
+        
+        vector<Node> G = graph->getAllNodes();
+        for (int i=0;i<sizeof(G);i++)
+        {
+            if (G[i].visited==false)
+            {
+                G[i].visited=true;
+                Q->rear = (Q->rear + 1) % Q->capacity;
+                Q->array[Q->rear] = G[i];
+                Q->size = Q->size + 1;
+                while (Q->size!=0)
+                {
+                    Node
+                }
+            }
+            
+        }
+        
+        
+//        let Q be a queue
+//        for each vertex v in G:
+//            if v is not visited:
+//                mark v as visited and add it to Q
+//                while Q is not empty:
+//                    cur = Q.dequeue()
+//                    “process cur”
+//                    for each vertex vi that has an edge from cur:
+//                        if vi is not visited:
+//                            mark vi as visited and add it to Q
+        
+        
+
+
+    }
+//
+//    ArrayList<Node> BFTIter(final Graph graph)
+//    {
+//
+//
+//
+//        // does an iterative BFT search
+//
+//
+//
+//    }
+
+
+
 };
 
 
