@@ -135,6 +135,7 @@ class GraphSearch: public Graph
         
         
         vector<Node*> vertices = start->neighbors;
+        vertices.push_back(start);
         
         
         for (int i; i<sizeof(vertices) ; i++)
