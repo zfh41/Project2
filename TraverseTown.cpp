@@ -14,7 +14,7 @@ struct Node {
   string name;
   vector<Node*> neighbors;
   bool visited;
-  Node(string name) {
+  Node(int name) {
     this->name=name;
   }
 };
@@ -33,7 +33,7 @@ class Graph
   public:
     vector<Node> BFTRecLinkedList(const Graph graph);
     vector<Node> BFTIterLinkedList(const Graph graph);
-    void addNode(const string nodeVal);
+    void addNode(const int nodeVal);
     void addUndirectedEdge(struct Node *first, struct Node *second);
     void removeUndirectedEdge(struct Node *first, struct Node *second);
     vector<Node*> getAllNodes();
@@ -46,15 +46,6 @@ class Graph
         
         Graph *randomGraph;
         
-        static const char pool[] =
-        "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-        "abcdefghijklmnopqrstuvwxyz"
-        "0123456789";
-        
-        int poolsize = sizeof(pool)-1;
-        
-        string random_string;
-        
         int iRand;
         
         
@@ -65,13 +56,8 @@ class Graph
             
             iRand = rand() % 10 + 1;
             
-             for (int i=0;i<iRand;i++)
-             {
-                 random_string += pool[rand() % poolsize];
-                 
-             }
             //pass that random value into the graph as a node
-            randomGraph->addNode(random_string);
+            randomGraph->addNode(iRand);
         }
 
 
@@ -105,13 +91,15 @@ class Graph
         // go through one and its increment and add an undirected edge
         for (int i=0;i<n;i++)
         {
-            linkedGraph->addNode(to_string(i));
-            linkedGraph->addNode(to_string(i+1));
+            linkedGraph->addNode(i);
+            linkedGraph->addNode(i+1);
             
             bunchNodes=linkedGraph->getAllNodes();
             
             linkedGraph->addUndirectedEdge(bunchNodes[i], bunchNodes[i+1]);
         }
+        
+        return linkedGraph;
     }
     
 };
@@ -135,7 +123,6 @@ class GraphSearch: public Graph
         
         
         vector<Node*> vertices = start->neighbors;
-        vertices.push_back(start);
         
         
         for (int i; i<sizeof(vertices) ; i++)
@@ -208,8 +195,7 @@ class GraphSearch: public Graph
         return result;
     }
 
-
-    public: vector<Node> BFTRec(Graph* graph)
+    public: vector<Node*> BFTRec(Graph* graph)
     {
         // does a recursive BFT search
         
@@ -221,15 +207,51 @@ class GraphSearch: public Graph
 //                            for each vertex vi that has an edge from cur:
 //                                if vi is not visited:
 //                                    mark vi as visited and add it to Q
+        vector<Node*> v, pass;
         
+        vector<Node*> nodes = graph->getAllNodes();
         
+        for (int i=0;i<nodes.size();i++)
+        {
+            if(!nodes[i]->visited){
+                nodes[i]->visited = true;
+                v.push_back(nodes[i]);
+                BFTHelper(v, pass);
+            }
+                
+                
+        }
         
+        return pass;
+            
+    }
+    
+    public: void BFTHelper(vector<Node*> &vec, vector<Node*> &p)
+    {
         
+        Node *n;
         
+        if (vec.empty())
+            return;
+        
+        n = vec.front();
+        vec.erase(vec.begin());
+        p.push_back(n);
+        for (int i = 0; i < n->neighbors.size(); i++){
+            if (!n->neighbors[i]->visited){
+                n->neighbors[i]->visited = true;
+                vec.push_back(n->neighbors[i]);
+            }
+        }
+        BFTHelper(vec, p);
         
         
     }
+    
+    
+    
 
+        
         
         
     
@@ -237,10 +259,22 @@ class GraphSearch: public Graph
     {
         
         // does an iterative BFT search
+        
+        //        let Q be a queue
+        //        for each vertex v in G:
+        //            if v is not visited:
+        //                mark v as visited and add it to Q
+        //                while Q is not empty:
+        //                    cur = Q.dequeue()
+        //                    “process cur”
+        //                    for each vertex vi that has an edge from cur:
+        //                        if vi is not visited:
+        //                            mark vi as visited and add it to Q
+
         vector<Node> result;
         
          Queue* Q = new Queue();
-            Q->capacity=100;
+         Q->capacity=100;
             Q->front = Q->size = 0;
             Q->rear = Q->capacity - 1;
             Q->array = *new Node*[(Q->capacity * sizeof(Node*))];
@@ -275,19 +309,6 @@ class GraphSearch: public Graph
                 }
             }
         return result;
-            
-                
-        //        let Q be a queue
-        //        for each vertex v in G:
-        //            if v is not visited:
-        //                mark v as visited and add it to Q
-        //                while Q is not empty:
-        //                    cur = Q.dequeue()
-        //                    “process cur”
-        //                    for each vertex vi that has an edge from cur:
-        //                        if vi is not visited:
-        //                            mark vi as visited and add it to Q
-
 
     }
 
@@ -300,9 +321,8 @@ vector<Node *> graphList;
 
 
 
-void Graph::addNode(const string nodeVal)
+void Graph::addNode(const int nodeVal)
 {
-    
     Node* n;
     n = new Node(nodeVal);
     n->visited=false;
@@ -380,9 +400,6 @@ vector<Node> Graph::BFTIterLinkedList(const Graph graph)
         BFTgraph = createLinkedList(10000);
     
         iter.BFTIter(BFTgraph);
-    
-        
-        
         
         // perform a BFT on the linked list graph
         
@@ -391,6 +408,8 @@ vector<Node> Graph::BFTIterLinkedList(const Graph graph)
 
 int main()
 {
+    
+    
     return 0;
 
 }
