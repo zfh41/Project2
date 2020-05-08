@@ -12,14 +12,13 @@
 using namespace std;
 
 struct Node {
-  string name;
+  int name;
   vector<Node*> neighbors;
   bool visited;
   int degree;
-  Node(string name) {
+  Node(int name) {
     this->name=name;
   }
-    
 };
 
 class Queue
@@ -36,7 +35,7 @@ class DirectedGraph
 {
   public:
     vector<Node *> graphList;
-    void addNode(const string nodeVal);
+    void addNode(const int nodeVal);
     void addDirectedEdge(struct Node *first, struct Node *second);
     void removeDirectedEdge(struct Node *first, struct Node *second);
     vector<Node*> getAllNodes();
@@ -48,47 +47,27 @@ class DirectedGraph
         
         DirectedGraph *randomGraph;
         
-        static const char pool[] =
-        "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-        "abcdefghijklmnopqrstuvwxyz"
-        "0123456789";
-        
-        int poolsize = sizeof(pool)-1;
-        
-        string random_string;
+        random_device rd;
         
         int iRand;
         
+        iRand = rand() % 10 + 1;
         
-        
-        for (int i=0;i<n;i++)
-        {
-            //create random value
-            
-            iRand = rand() % 10 + 1;
-            
-             for (int i=0;i<iRand;i++)
-             {
-                 random_string += pool[rand() % poolsize];
-                 
-             }
-            //pass that random value into the graph as a node
-            randomGraph->addNode(random_string);
+        for (int i = 0; i < n; i++){
+            randomGraph->addNode(iRand);
         }
         
         vector<Node*> bunchNodes=randomGraph->getAllNodes();
+        int a,b;
         
-        
-        // generate two random numbers in range of n
         for(int i=0;i<n;i++)
         {
-
-            Node* node1 = bunchNodes[i];
-            Node* node2 = bunchNodes[i+1];
-
-            randomGraph->addDirectedEdge(node1, node2);
-
+            
+            a = iRand % randomGraph->getAllNodes().size();
+            b = iRand % randomGraph->getAllNodes().size();
+            randomGraph->addDirectedEdge(bunchNodes[a], bunchNodes[b]);
         }
+        
         
         return randomGraph;
         
@@ -182,11 +161,13 @@ class TopSort
 
 vector<int> adj[50];
 
-void DirectedGraph::addNode(const string nodeVal)
-{
 
+
+void DirectedGraph::addNode(const int nodeVal)
+{
     Node* n;
     n = new Node(nodeVal);
+    n->visited=false;
     graphList.push_back(n);
     return;
 }
@@ -229,6 +210,12 @@ void DirectedGraph::printGraph(vector<Node*> graph)
 
 int main()
 {
+    
+    DirectedGraph *randomgraph;
+    
+    randomgraph->createRandomDAGIter(7);
+    
+    
     return 0;
     
 }

@@ -11,7 +11,7 @@
 using namespace std;
 
 struct Node {
-  string name;
+  int name;
   vector<Node*> neighbors;
   bool visited;
   Node(int name) {
@@ -34,7 +34,7 @@ class Graph
     vector<Node> BFTRecLinkedList(const Graph graph);
     vector<Node> BFTIterLinkedList(const Graph graph);
     void addNode(const int nodeVal);
-    void addUndirectedEdge(struct Node *first, struct Node *second);
+    void addDirectedEdge(struct Node *first, struct Node *second);
     void removeUndirectedEdge(struct Node *first, struct Node *second);
     vector<Node*> getAllNodes();
     void printGraph(vector<Node*> graphList);
@@ -42,44 +42,28 @@ class Graph
     
     Graph* createRandomUnweightedGraphIter(int n)
     {
-        // create n random nodes
+    
+        Graph *randGraph;
         
-        Graph *randomGraph;
+        random_device rd;
+        mt19937 mt(rd());
+        uniform_int_distribution<int> dist(0, (n*n*n));
+        int r, i;
+        for (i = 0; i < n; i++)
+            randGraph->addNode(dist(mt));
         
-        int iRand;
+        vector<Node*> nodes = randGraph->getAllNodes();
         
-        
-        
-        for (int i=0;i<n;i++)
-        {
-            //create random value
-            
-            iRand = rand() % 10 + 1;
-            
-            //pass that random value into the graph as a node
-            randomGraph->addNode(iRand);
+        for (i = 0; i < nodes.size(); i++){
+            for (int j = 0; j < nodes.size(); j++){
+                if (nodes[i]->name == nodes[j]->name)
+                    continue;
+                else{
+                    r = rand() % 15 + 1;
+                    randGraph->addDirectedEdge(nodes[i], nodes[j]);
+                }
+            }
         }
-
-
-
-        // randomly assign unweighted bidirectional edges to the nodes
-        vector<Node*> bunchNodes=randomGraph->getAllNodes();
-        
-        
-        // generate two random numbers in range of n
-        for(int i=0;i<n;i++)
-        {
-            int rand1 = rand() % n + 1;
-            int rand2 = rand() % n + 1;
-
-            Node* node1 = bunchNodes[rand1];
-            Node* node2 = bunchNodes[rand2];
-
-            randomGraph->addUndirectedEdge(node1, node2);
-
-        }
-
-        return randomGraph;
     }
     
     Graph* createLinkedList(int n)
@@ -96,7 +80,7 @@ class Graph
             
             bunchNodes=linkedGraph->getAllNodes();
             
-            linkedGraph->addUndirectedEdge(bunchNodes[i], bunchNodes[i+1]);
+            linkedGraph->addDirectedEdge(bunchNodes[i], bunchNodes[i+1]);
         }
         
         return linkedGraph;
@@ -247,10 +231,6 @@ class GraphSearch: public Graph
         
         
     }
-    
-    
-    
-
         
         
         
@@ -331,10 +311,13 @@ void Graph::addNode(const int nodeVal)
 }
 
 
-void Graph::addUndirectedEdge(Node *first, Node *second)
+void Graph::addDirectedEdge(Node *first, Node *second)
 {
+        
     first->neighbors.push_back(second);
     second->neighbors.push_back(first);
+    
+    
 }
 
 
